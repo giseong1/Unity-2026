@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -48,5 +49,15 @@ public class PlayerController : MonoBehaviour
                 this.idx = 1 - this.idx;
             }
         }
+        // 화면 밖으로 나가면 처음부터
+        if (transform.position.y < -10)
+        {
+            SceneManager.LoadScene("MainScene");
+        }
+    }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("도착");
+        SceneManager.LoadScene("ClearScene");
     }
 }

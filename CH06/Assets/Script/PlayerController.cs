@@ -5,13 +5,14 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rigid2D;
     float jumpForce = 300.0f;
-    float walkForce = 30.0f;
+    float walkForce = 20.0f;
     float maxWalkSpeed = 2.0f;
     public Sprite[] walkSprites;
     public Sprite jumpSprite;
     float time = 0;
     int idx = 0;
     SpriteRenderer spriteRenderer;
+    static int stageCount = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //점프
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && this.rigid2D.linearVelocityY == 0)
         {
             this.rigid2D.AddForce(transform.up * this.jumpForce);
         }
@@ -52,12 +53,22 @@ public class PlayerController : MonoBehaviour
         // 화면 밖으로 나가면 처음부터
         if (transform.position.y < -10)
         {
+           //stageCount = 0;
             SceneManager.LoadScene("MainScene");
         }
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("도착");
-        SceneManager.LoadScene("ClearScene");
+        if (stageCount == 0)
+        {
+            stageCount++; // 카운트 1 증가
+            SceneManager.LoadScene("SampleScene");
+        }
+        else
+        {
+            //stageCount = 0;
+            SceneManager.LoadScene("ClearScene");
+        }
     }
 }

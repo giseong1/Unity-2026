@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class BamsongiController : MonoBehaviour
 {
-    void Shoot(Vector3 dir) 
+    public void Shoot(Vector3 force) 
     {
-        GetComponent<Rigidbody>().AddForce(dir);
+        GetComponent<Rigidbody>().AddForce(force);
     }
 
     void OnCollisionEnter(Collision collision)

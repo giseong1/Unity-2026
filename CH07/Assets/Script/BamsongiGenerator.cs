@@ -3,6 +3,8 @@ using UnityEngine;
 public class BamsongiGenerator : MonoBehaviour
 {
     public GameObject bamsongiPrefab;
+    public float throwForce = 10f;
+    private float startY;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,8 +16,18 @@ public class BamsongiGenerator : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            startY = Input.mousePosition.y;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
             GameObject bamsongi = Instantiate(bamsongiPrefab);
-            bamsongi.GetComponent<BamsongiController>().Shoot(new Vector3(0, 200, 2000))
+
+            float power = Input.mousePosition.y - startY;
+
+            Vector3 dir = (transform.forward + transform.up).normalized;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bamsongi.GetComponent<BamsongiController>().Shoot(dir * power * throwForce);
+            
         }
     }
 }

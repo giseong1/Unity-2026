@@ -3,7 +3,7 @@ using UnityEngine;
 public class BamsongiGenerator : MonoBehaviour
 {
     public GameObject bamsongiPrefab;
-    public float throwForce = 1f;
+    public float throwForce = 0.5f;
     private float startY;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

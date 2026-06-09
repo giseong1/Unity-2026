@@ -1,4 +1,5 @@
     using UnityEngine;
+using UnityEngine.SceneManagement;
 
     public class PlayerController : MonoBehaviour
     {
@@ -19,18 +20,19 @@
         private int jumpCount;
 
         bool wasGrounded;
+        private Vector2 startPosition;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
         {
-            Application.targetFrameRate = 60;
+            //Application.targetFrameRate = 60;
             this.rb = GetComponent<Rigidbody2D>();
             this.spriteRenderer = GetComponent<SpriteRenderer>();
 
             this.spriteRenderer.sprite = idleSprite;
 
             jumpCount = maxJumpCount;
-
+            startPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -72,8 +74,8 @@
             jumpCount = maxJumpCount; 
         }
 
-        //애니메이션
-        if (Mathf.Abs(rb.linearVelocity.y) > 0.1f)
+        //점프 애니메이션
+        if (rb.linearVelocity.y > 0.1f || rb.linearVelocity.y < -0.1f)
         {
             animationTimer += Time.deltaTime;
 
@@ -117,19 +119,22 @@
             spriteIndex = 0;
             animationTimer = 0f;
         }
+        rb.linearVelocity = new Vector2(horizon * walkForce, rb.linearVelocity.y);
     }
-        void FixedUpdate()
-        {
-        
-            rb.linearVelocity = new Vector2(horizon * walkForce, rb.linearVelocity.y);
-        }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         // 함정(Trap) 태그를 가진 오브젝트와 부딪혔을 때
         if (collision.CompareTag("Trap"))
         {
             GameManager.Instance.LoseLife();
+
+            transform.position = startPosition;
+
         }
+        else if (collision.CompareTag("Flag"))
+        {
+            SceneManager.LoadScene("ClearScene");
+        } 
     }
 }

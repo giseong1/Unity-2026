@@ -6,118 +6,54 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    
-    public int maxLives = 3;
-    private int currentLives;
+    private int currentLives = 3;
     private int currentScore = 0;
 
-    
     public TextMeshProUGUI livesText;
     public TextMeshProUGUI scoreText;
 
-    private bool isDying = false;
-
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            currentLives = maxLives;
-            currentScore = 0;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
+    private float lastHitTime;
 
     void Start()
     {
-        FindAndRefreshUI();
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (Instance == this)
-        {
-            FindAndRefreshUI();
-        }
-    }
-
-    void FindAndRefreshUI()
-    {
-        GameObject livesObj = GameObject.Find("LivesText");
-        if (livesObj != null)
-        {
-            livesText = livesObj.GetComponent<TextMeshProUGUI>();
-        }
-
-        GameObject scoreObj = GameObject.Find("ScoreText");
-        if (scoreObj != null)
-        {
-            scoreText = scoreObj.GetComponent<TextMeshProUGUI>();
-        }
-
-        isDying = false;
+        Instance = this;
 
         UpdateUI();
     }
 
+    // 점수 추가
+    public void AddScore(int score)
+    {
+        currentScore += score;
+        UpdateUI();
+    }
+
+    // 목숨 감소
     public void LoseLife()
     {
-        if (isDying) return;
-        isDying = true;
+        if (Time.time - lastHitTime < 0.3f) return;
+        lastHitTime = Time.time;
 
         currentLives--;
+
         UpdateUI();
 
-        if (currentLives > 0)
-        {
-            Debug.Log("목숨을 잃었습니다.");
-            SceneManager.LoadScene("GameScene");
-        }
-        else
+        if (currentLives <= 0)
         {
             GameOver();
         }
     }
 
+    // 게임 오버
     void GameOver()
     {
-        Debug.Log("게임 오버!");
-        
         SceneManager.LoadScene("FailScene");
     }
 
-    public void AddScore(int amount)
-    {
-        currentScore += amount;
-        UpdateUI();
-    }
-
+    // UI 갱신
     void UpdateUI()
     {
-        if (livesText != null)
-        {
-            livesText.text = "Lives: " + currentLives;
-        }
-
-        if (scoreText != null)
-        {
-            scoreText.text = "Score: " + currentScore.ToString("D3");
-        }
+        livesText.text = "Lives: " + currentLives;
+        scoreText.text = "Score: " + currentScore.ToString("D3");
     }
 }

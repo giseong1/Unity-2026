@@ -5,11 +5,10 @@ public class Coin : MonoBehaviour
     public int scoreValue = 100;
 
     public Sprite[] sprites;
-    public float frameTime = 0.1f;
 
     private SpriteRenderer sr;
     private int currentFrame;
-    private float timer;
+    private float time;
 
     void Start()
     {
@@ -18,11 +17,11 @@ public class Coin : MonoBehaviour
 
     void Update()
     {
-        timer += Time.deltaTime;
+        time += Time.deltaTime;
 
-        if (timer >= frameTime)
+        if (time >= 0.1f)
         {
-            timer = 0f;
+            time = 0f;
             currentFrame = (currentFrame + 1) % sprites.Length;
             sr.sprite = sprites[currentFrame];
         }
@@ -35,5 +34,6 @@ public class Coin : MonoBehaviour
             GameManager.Instance.AddScore(scoreValue);
             Destroy(gameObject);
         }
+
     }
 }
